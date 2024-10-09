@@ -21,15 +21,19 @@ public class Course implements Serializable {
     private String name;
     @OneToMany(mappedBy = "course")
     private List<Student> students;
+    @OneToMany(mappedBy = "course")
+    private List<Subject> subjects;
 
     public Course() {
         students = new ArrayList<>();
+        subjects = new ArrayList<>();
     }
 
     public Course(long code, String name) {
         this.code = code;
         this.name = name;
         students = new ArrayList<>();
+        subjects = new ArrayList<>();
     }
 
     public long getCode() {
@@ -66,6 +70,26 @@ public class Course implements Serializable {
 
     public void clearStudents() {
         students.clear();
+    }
+
+    public List<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(List<Subject> subjects) {
+        this.subjects = subjects;
+    }
+
+    public void addSubject(Subject subject) {
+        subjects.add(subject);
+    }
+
+    public void removeSubject(Subject subject) {
+        subjects.remove(subject);
+    }
+
+    public void clearSubjects() {
+        subjects.clear();
     }
 
     @Override
