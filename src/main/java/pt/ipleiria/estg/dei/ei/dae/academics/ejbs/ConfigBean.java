@@ -13,20 +13,55 @@ public class ConfigBean {
     private  StudentBean studentBean;
     @EJB
     private  CourseBean courseBean;
+    @EJB
+    private  SubjectBean subjectBean;
 
     @PostConstruct
     public void populateDB() {
-        // Populate the database with some initial data
         System.out.println("Populating the database with some initial data");
+        createCourses();
+        createSubjects();
+        createStudents();
+        enrollStudents();
+    }
 
-        //Courses
-        courseBean.create(1, "Course 1");
-        courseBean.create(2, "Course 2");
-        courseBean.create(3, "Course 3");
+    private void createCourses() {
+        courseBean.create(1, "Computer Science");
+        courseBean.create(2, "Software Engineering");
+        courseBean.create(3, "Information Systems");
+    }
 
-        //Students
-        studentBean.create("student1", "password1", "Student 1", "student1@ipleiria.pt",1);
-        studentBean.create("student2", "password2", "Student 2", "student2@ipleiria.pt",2);
-        studentBean.create("student3", "password3", "Student 3", "student3@ipleiria.pt",3);
+    private void createSubjects(){
+        subjectBean.create(1, "Mathematics", "1st", 1, 1);
+        subjectBean.create(2, "Programming", "1st", 1, 1);
+        subjectBean.create(3, "Databases", "1st", 1, 1);
+        subjectBean.create(4, "Mathematics", "1st", 1, 2);
+        subjectBean.create(5, "Programming", "1st", 1, 2);
+        subjectBean.create(6, "Databases", "1st", 1, 2);
+        subjectBean.create(7, "Mathematics", "1st", 1, 3);
+        subjectBean.create(8, "Programming", "1st", 1, 3);
+        subjectBean.create(9, "Databases", "1st", 1, 3);
+    }
+
+    private void createStudents() {
+        studentBean.create("up201800000", "John Doe", "johndoe", "johndoe@email.pt", 1);
+        studentBean.create("up201800001", "Jane Doe", "janedoe", "janedoe@wmail.pt", 1);
+        studentBean.create("up201800002", "Alice Doe", "alicedoe", "alicedoe@email.pt", 1);
+        studentBean.create("up201800003", "Bob Doe", "bobdoe", "bobdoe@wmail.pt", 1);
+    }
+
+    private void enrollStudents(){
+        subjectBean.enrollStudentInSubject("up201800000", 1);
+        subjectBean.enrollStudentInSubject("up201800000", 2);
+        subjectBean.enrollStudentInSubject("up201800000", 3);
+        subjectBean.enrollStudentInSubject("up201800001", 1);
+        subjectBean.enrollStudentInSubject("up201800001", 2);
+        subjectBean.enrollStudentInSubject("up201800001", 3);
+        subjectBean.enrollStudentInSubject("up201800002", 1);
+        subjectBean.enrollStudentInSubject("up201800002", 2);
+        subjectBean.enrollStudentInSubject("up201800002", 3);
+        subjectBean.enrollStudentInSubject("up201800003", 1);
+        subjectBean.enrollStudentInSubject("up201800003", 2);
+        subjectBean.enrollStudentInSubject("up201800003", 3);
     }
 }

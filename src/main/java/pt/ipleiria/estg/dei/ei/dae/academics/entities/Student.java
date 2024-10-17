@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "students",uniqueConstraints = { @UniqueConstraint(columnNames = "email")})
+@Table(name = "students", uniqueConstraints = { @UniqueConstraint(columnNames = "email") })
 @NamedQueries({
         @NamedQuery(
                 name = "getAllStudents",
@@ -18,29 +18,38 @@ import java.util.List;
         )
 })
 public class Student implements Serializable {
-    //username,password, name and email
 
     @Id
+    @Column(name = "username")
     @NotBlank(message = "Username is mandatory")
     private String username;
+
+    @Column(name = "password")
     @NotBlank(message = "Password is mandatory")
     private String password;
+
+    @Column(name = "name")
     @NotBlank(message = "Name is mandatory")
     private String name;
+
+    @Column(name = "email")
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Invalid email")
     private String email;
+
     @ManyToOne
+    @JoinColumn(name = "course_id")
     @NotNull
     private Course course;
-    @ManyToMany
+
+    @ManyToMany(mappedBy = "students", cascade = CascadeType.ALL)
     private List<Subject> subjects;
 
-    public Student(){
+    public Student() {
         subjects = new ArrayList<>();
     }
 
-    public Student(String username, String password, String name, String email, Course course){
+    public Student(String username, String password, String name, String email, Course course) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -111,7 +120,7 @@ public class Student implements Serializable {
 
     @Override
     public String toString(){
-        return "Student{" + "username=" + username + ", password=" + password + ", name=" + name + ", email=" + email + '}';
+        return "Student{" + "username=" + username + ", name=" + name + ", email=" + email + '}';
     }
 
 }

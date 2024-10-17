@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import pt.ipleiria.estg.dei.ei.dae.academics.entities.Course;
 import pt.ipleiria.estg.dei.ei.dae.academics.entities.Student;
+import pt.ipleiria.estg.dei.ei.dae.academics.entities.Subject;
 
 import java.util.List;
 
@@ -36,6 +37,17 @@ public class StudentBean {
             throw new IllegalArgumentException("Student "+username+" not found");
         }
         return student;
+    }
+
+    //enrollStudentInSubject
+    public void enrollStudentInSubject(String username, long subjectCode){
+        Student student = find(username);
+        //check if subject exists using find method from SubjectBean
+        Subject subject = entityManager.find(Subject.class, subjectCode);
+        if (subject == null) {
+            throw new IllegalArgumentException("Subject " + subjectCode + " not found");
+        }
+        student.addSubject(subject);
     }
 
 }

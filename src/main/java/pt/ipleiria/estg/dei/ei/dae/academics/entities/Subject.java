@@ -1,35 +1,58 @@
 package pt.ipleiria.estg.dei.ei.dae.academics.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(
+        name = "subjects",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"code","course_code","school_year"})
+        }
+)
 @NamedQueries({
-    //get all subjects ordered by Course year and then by scholarYear
-    @NamedQuery(
-            name = "getAllSubjects",
-            query = "SELECT s FROM Subject s ORDER BY s.courseYear, s.schoolYear" // JPQL
-    )
+        @NamedQuery(
+                name = "getAllSubjects",
+                query = "SELECT s FROM Subject s " +
+                        "JOIN s.course c " +  // Faz o JOIN para poder aceder ao nome do curso
+                        "ORDER BY c.name ASC, s.schoolYear DESC, s.courseYear ASC, s.name ASC"
+        )
 })
 public class Subject implements Serializable {
+
     @Id
-    @NotBlank(message = "Code is mandatory")
+    @Column(name = "code")
     private long code;
-    @NotBlank(message = "Name is mandatory")
+    @Column(name = "name")
     private String name;
-    @NotBlank(message = "School year is mandatory")
+    @Column(name = "school_year")
     private String schoolYear;
-    @NotBlank(message = "Course year is mandatory")
+    @Column(name = "course_year")
     private int courseYear;
-    @NotBlank(message = "Semester is mandatory")
     @ManyToOne
+    @JoinColumn(name = "course_code", referencedColumnName = "code")
     private Course course;
-    @ManyToMany(mappedBy = "subjects")
+    @ManyToMany
+    @JoinTable(
+            name = "subject_student",
+            joinColumns = @JoinColumn(
+                    name = "subject_code",
+                    referencedColumnName = "code"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "student_username",
+                    referencedColumnName = "username"
+            )
+    )
     private List<Student> students;
+
+    public Subject() {
+        //create a new list of students
+        students = new ArrayList<>();
+    }
 
     public Subject(long code, String name, String schoolYear, int courseYear, Course course) {
         this.code = code;
@@ -40,49 +63,43 @@ public class Subject implements Serializable {
         students = new ArrayList<>();
     }
 
-    public Subject() {
-        students = new ArrayList<>();
-    }
-
-    @NotBlank(message = "Code is mandatory")
     public long getCode() {
         return code;
     }
 
-    public void setCode(@NotBlank(message = "Code is mandatory") long code) {
+    public void setCode(long code) {
         this.code = code;
     }
 
-    public @NotBlank(message = "Name is mandatory") String getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(@NotBlank(message = "Name is mandatory") String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public @NotBlank(message = "School year is mandatory") String getSchoolYear() {
+    public String getSchoolYear() {
         return schoolYear;
     }
 
-    public void setSchoolYear(@NotBlank(message = "School year is mandatory") String schoolYear) {
+    public void setSchoolYear(String schoolYear) {
         this.schoolYear = schoolYear;
     }
 
-    @NotBlank(message = "Course year is mandatory")
     public int getCourseYear() {
         return courseYear;
     }
 
-    public void setCourseYear(@NotBlank(message = "Course year is mandatory") int courseYear) {
+    public void setCourseYear(int courseYear) {
         this.courseYear = courseYear;
     }
 
-    public @NotBlank(message = "Semester is mandatory") Course getCourse() {
+    public Course getCourse() {
         return course;
     }
 
-    public void setCourse(@NotBlank(message = "Semester is mandatory") Course course) {
+    public void setCourse(Course course) {
         this.course = course;
     }
 
@@ -102,5 +119,16 @@ public class Subject implements Serializable {
         students.remove(student);
     }
 
+    public boolean isEnrolled(Student student) {
+        return students.contains(student);
+    }
 
+    public void clearStudents() {
+        students.clear();
+    }
+
+    @Override
+    public String toString() {
+        return "Subject{" + "code=" + code + ", name=" + name + ", schoolYear=" + schoolYear + ", courseYear=" + courseYear + '}';
+    }
 }

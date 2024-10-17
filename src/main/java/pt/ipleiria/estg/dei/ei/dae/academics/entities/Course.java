@@ -1,6 +1,8 @@
 package pt.ipleiria.estg.dei.ei.dae.academics.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,12 +19,17 @@ import java.util.List;
 
 public class Course implements Serializable {
     @Id
+    @NotNull(message = "Code is mandatory")
     private long code;
+    @NotBlank(message = "Name is mandatory")
     private String name;
-    @OneToMany(mappedBy = "course")
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<Student> students;
-    @OneToMany(mappedBy = "course")
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Subject> subjects;
+
 
     public Course() {
         students = new ArrayList<>();
@@ -98,6 +105,22 @@ public class Course implements Serializable {
                 "code=" + code +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    //equals and hashcode
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Course)) return false;
+
+        Course course = (Course) o;
+
+        return code == course.code;
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.hashCode(code);
     }
 
 }
