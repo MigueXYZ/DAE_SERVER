@@ -27,20 +27,15 @@ Content-Type: application/json
 "code": "1990"
 }
 
-### Get all subjects
-
-GET http://localhost:8080/academics/api/subject
+### Get Student
+GET http://localhost:8080/academics/api/student/john
 Accept: application/json
 
-### Create a new subject
-POST http://localhost:8080/academics/api/subject
-Content-Type: application/json
+### Get Student Subjects
+GET http://localhost:8080/academics/api/student/john/subjects
+Accept: application/json
 
-{
-  "name": "Mathematics",
-  "code": "MTH",
-  "course": 1,
-  "schoolYear": 2020,
-  "semester": 1,
 
-}
+
+
+
