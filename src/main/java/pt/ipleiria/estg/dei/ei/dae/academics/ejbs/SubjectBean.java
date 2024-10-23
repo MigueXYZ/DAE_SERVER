@@ -43,16 +43,33 @@ public class SubjectBean {
 
     //enroll student in subject
     public void enrollStudentInSubject(String username, long subjectCode){
-        //check if student exists using find method from StudentBean
+        //check if student with username exists using find method from StudentBean
         Student student = entityManager.find(Student.class, username);
         if (student == null) {
             throw new IllegalArgumentException("Student " + username + " not found");
         }
-        //check if subject exists using find method from SubjectBean
-        Subject subject = entityManager.find(Subject.class, subjectCode);
-        if (subject == null) {
-            throw new IllegalArgumentException("Subject " + subjectCode + " not found");
-        }
+        //check if subject with code exists using find method from this class
+        Subject subject = find(subjectCode);
+
+        //add subject and student to list
         student.addSubject(subject);
+        subject.addStudent(student);
+
+        //create relationship
+        entityManager.merge(student);
+        entityManager.merge(subject);
+
+        //persist changes
+        entityManager.flush();
+
+        //check if student is now in subject
+        if(!subject.getStudents().contains(student)){
+            throw new IllegalArgumentException("Student "+username+" not enrolled in subject "+subjectCode);
+        }
+
+        //check if subject is now in student
+        if(!student.getSubjects().contains(subject)){
+            throw new IllegalArgumentException("Subject "+subjectCode+" not enrolled in student "+username);
+        }
     }
 }

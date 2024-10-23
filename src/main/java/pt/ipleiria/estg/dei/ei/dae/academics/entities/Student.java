@@ -42,7 +42,7 @@ public class Student implements Serializable {
     @NotNull
     private Course course;
 
-    @ManyToMany(mappedBy = "students", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "students")
     private List<Subject> subjects;
 
     public Student() {
