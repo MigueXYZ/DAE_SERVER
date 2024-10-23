@@ -71,5 +71,6 @@ public class SubjectBean {
         if(!student.getSubjects().contains(subject)){
             throw new IllegalArgumentException("Subject "+subjectCode+" not enrolled in student "+username);
         }
+
     }
 }
