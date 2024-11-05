@@ -1,11 +1,9 @@
 package pt.ipleiria.estg.dei.ei.dae.academics.ws;
 
 import jakarta.ejb.EJB;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import pt.ipleiria.estg.dei.ei.dae.academics.dtos.AdministratorDTO;
 import pt.ipleiria.estg.dei.ei.dae.academics.ejbs.AdministratorBean;
 import pt.ipleiria.estg.dei.ei.dae.academics.entities.Administrator;
@@ -28,7 +26,7 @@ public class AdministratorService {
     //create a new administrator
     @POST
     @Path("/")
-    public void createNewAdministrator(AdministratorDTO administratorDTO) {
+    public Response createNewAdministrator(AdministratorDTO administratorDTO) {
         administratorBean.create(
                 administratorDTO.getUsername(),
                 administratorDTO.getPassword(),
@@ -36,6 +34,10 @@ public class AdministratorService {
                 administratorDTO.getEmail()
         );
         Administrator newAdministrator = administratorBean.find(administratorDTO.getUsername());
+
+        return Response.status(Response.Status.CREATED)
+                .entity(AdministratorDTO.from(newAdministrator))
+                .build();
     }
 
     //get administrator by username
