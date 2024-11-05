@@ -71,6 +71,13 @@ public class SubjectBean {
         if(!student.getSubjects().contains(subject)){
             throw new IllegalArgumentException("Subject "+subjectCode+" not enrolled in student "+username);
         }
+    }
 
+    //find subject taught in course
+    public List<Subject> findSubjectsTaughtInCourse(long courseCode){
+        // remember, maps to: “SELECT s FROM Subject s JOIN s.course c WHERE c.code = :courseCode ORDER BY c.name ASC, s.schoolYear DESC, s.courseYear ASC, s.name ASC”
+        return entityManager.createNamedQuery("getSubjectsTaughtInCourse", Subject.class)
+                .setParameter("courseCode", courseCode)
+                .getResultList();
     }
 }

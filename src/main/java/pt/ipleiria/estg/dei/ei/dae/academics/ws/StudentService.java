@@ -53,4 +53,48 @@ public class StudentService {
         var student = studentBean.findWithSubjects(username);
         return Response.ok(SubjectDTO.from(student.getSubjects())).build();
     }
+
+    @POST
+    @Path("{username}/enroll/{subjectCode}")
+    public Response enrollStudentInSubject(@PathParam("username") String username, @PathParam("subjectCode") long subjectCode) {
+        studentBean.enrollStudentInSubject(username, subjectCode);
+        var student = studentBean.findWithSubjects(username);
+        return Response.ok(SubjectDTO.from(student.getSubjects())).build();
+    }
+
+    @POST
+    @Path("{username}/unenroll/{subjectCode}")
+    public Response unenrollStudentInSubject(@PathParam("username") String username, @PathParam("subjectCode") long subjectCode) {
+        studentBean.unenrollStudentInSubject(username, subjectCode);
+        var student = studentBean.findWithSubjects(username);
+        return Response.ok(SubjectDTO.from(student.getSubjects())).build();
+    }
+
+    @DELETE
+    @Path("{username}")
+    public Response deleteStudent(@PathParam("username") String username) {
+        studentBean.delete(username);
+        return Response.ok().build();
+    }
+
+    //update student
+    @PATCH
+    @Path("{username}")
+    public Response updateStudent(@PathParam("username") String username, StudentDTO studentDTO) {
+        studentBean.update(username, studentDTO.getPassword(), studentDTO.getName(), studentDTO.getEmail(), studentDTO.getCourseCode());
+        var student = studentBean.find(username);
+        return Response.ok(StudentDTO.from(student)).build();
+    }
+
+    //insert new student
+    @POST
+    @Path("/")
+    public Response insertStudent(StudentDTO studentDTO) {
+        studentBean.create(studentDTO.getUsername(), studentDTO.getPassword(), studentDTO.getName(), studentDTO.getEmail(), studentDTO.getCourseCode());
+        var student = studentBean.find(studentDTO.getUsername());
+        return Response.ok(StudentDTO.from(student)).build();
+    }
+
+
+
 }

@@ -32,6 +32,12 @@ public class CourseBean {
         return course;
     }
 
+    //remove
+    public void remove(long code) {
+        Course course = find(code);
+        entityManager.remove(course);
+        entityManager.flush();
+    }
 
 
 }

@@ -40,4 +40,10 @@ public class CourseService {
                 .build();
     }
 
+    @DELETE
+    @Path("{code}")
+    public void removeCourse(@PathParam("code") long code) {
+        courseBean.remove(code);
+    }
+
 }

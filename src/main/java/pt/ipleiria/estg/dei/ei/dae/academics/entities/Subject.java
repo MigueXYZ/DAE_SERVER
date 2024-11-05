@@ -19,6 +19,27 @@ import java.util.List;
                 query = "SELECT s FROM Subject s " +
                         "JOIN s.course c " +  // Faz o JOIN para poder aceder ao nome do curso
                         "ORDER BY c.name ASC, s.schoolYear DESC, s.courseYear ASC, s.name ASC"
+        ),
+        @NamedQuery(
+                name = "getSubjectsByCourse",
+                query = "SELECT s FROM Subject s " +
+                        "JOIN s.course c " +  // Faz o JOIN para poder aceder ao nome do curso
+                        "WHERE c.code = :courseCode " +
+                        "ORDER BY s.schoolYear DESC, s.courseYear ASC, s.name ASC"
+        ),
+        @NamedQuery(
+                name = "getSubjectsByStudent",
+                query = "SELECT s FROM Subject s " +
+                        "JOIN s.students st " +  // Faz o JOIN para poder aceder aos estudantes
+                        "WHERE st.username = :username " +
+                        "ORDER BY s.schoolYear DESC, s.courseYear ASC, s.name ASC"
+        ),
+        @NamedQuery(
+                name = "getSubjectsByTeacher",
+                query = "SELECT s FROM Subject s " +
+                        "JOIN s.teachers t " +  // Faz o JOIN para poder aceder aos professores
+                        "WHERE t.username = :username " +
+                        "ORDER BY s.schoolYear DESC, s.courseYear ASC, s.name ASC"
         )
 })
 public class Subject implements Serializable {
@@ -49,9 +70,24 @@ public class Subject implements Serializable {
     )
     private List<Student> students;
 
+    @ManyToMany
+    @JoinTable(
+            name = "subject_teacher",
+            joinColumns = @JoinColumn(
+                    name = "subject_code",
+                    referencedColumnName = "code"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "teacher_username",
+                    referencedColumnName = "username"
+            )
+    )
+    private List<Teacher> teachers;
+
     public Subject() {
         //create a new list of students
         students = new ArrayList<>();
+        teachers = new ArrayList<>();
     }
 
     public Subject(long code, String name, String schoolYear, int courseYear, Course course) {
@@ -61,6 +97,7 @@ public class Subject implements Serializable {
         this.courseYear = courseYear;
         this.course = course;
         students = new ArrayList<>();
+        teachers = new ArrayList<>();
     }
 
     public long getCode() {
@@ -125,6 +162,30 @@ public class Subject implements Serializable {
 
     public void clearStudents() {
         students.clear();
+    }
+
+    public List<Teacher> getTeachers() {
+        return teachers;
+    }
+
+    public void setTeachers(List<Teacher> teachers) {
+        this.teachers = teachers;
+    }
+
+    public void addTeacher(Teacher teacher) {
+        teachers.add(teacher);
+    }
+
+    public void removeTeacher(Teacher teacher) {
+        teachers.remove(teacher);
+    }
+
+    public boolean isAssigned(Teacher teacher) {
+        return teachers.contains(teacher);
+    }
+
+    public void clearTeachers() {
+        teachers.clear();
     }
 
     @Override
